@@ -19,7 +19,7 @@ export default function App() {
       const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.category.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchPrice = p.price >= priceRange.min && p.price <= priceRange.max;
+      const matchPrice = p.price >= priceRange.min && p.price <= priceRange.max;   //BUG 1 PRICE FILTER 
       const matchCategory = category === 'All' || p.category === category;
       return matchSearch && matchPrice && matchCategory;
     });
@@ -32,7 +32,7 @@ export default function App() {
       default: break;
     }
     return list;
-  }, [searchQuery, priceRange, sortBy, category]);
+  }, [searchQuery, priceRange, sortBy, category]);   // BUG 2 :Category filter never applied
 
   function addToCart(product) {
     setCartItems(prev => {
@@ -44,7 +44,7 @@ export default function App() {
   }
 
   function removeFromCart(id) {
-    setCartItems(prev => prev.filter(i => i.id !== id));
+    setCartItems(prev => prev.filter(i => i.id !== id));  // BUG 3 : Delete keeps only the deleted item 
   }
 
   function updateQty(id, qty) {
@@ -52,8 +52,8 @@ export default function App() {
     setCartItems(prev => prev.map(i => i.id === id ? { ...i, qty } : i));
   }
 
-  const cartCount = cartItems.reduce((sum, i) => sum + i.qty, 0);
-  const cartItemIds = new Set(cartItems.map(i => i.id));
+  const cartCount = cartItems.reduce((sum, i) => sum + i.qty, 0);  // BUG 4 :  Cart badge always 0
+  const cartItemIds = new Set(cartItems.map(i => i.id));  // BUG 5 : FIXED Added button WHICH never turned green
 
   return (
     <div className="app">
